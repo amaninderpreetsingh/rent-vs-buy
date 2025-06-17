@@ -16,7 +16,6 @@ import {
 
 interface BuyingCalculationInputs {
   buying: BuyingInputs;
-  investment: InvestmentInputs;
 }
 
 interface BuyingCalculationResult {
@@ -24,8 +23,7 @@ interface BuyingCalculationResult {
 }
 
 export const calculateBuyingYearlyData = ({
-  buying,
-  investment,
+  buying
 }: BuyingCalculationInputs): BuyingCalculationResult => {
   const appreciationRate = getAppreciationRate(buying) / 100;
 

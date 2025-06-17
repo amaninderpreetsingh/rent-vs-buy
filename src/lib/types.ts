@@ -113,6 +113,7 @@ export interface ComparisonResults {
   yearlyComparisons: YearlyComparison[];
   buyingResults: YearlyBuyingResult[];
   rentingResults: YearlyRentingResult[];
+  finalInvestmentAmount: number;
   summary: {
     finalBuyingWealth: number;
     finalRentingWealth: number;

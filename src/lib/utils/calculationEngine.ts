@@ -14,7 +14,7 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
   const timeHorizonMonths = timeHorizonYears * 12;
 
   // --- Get Raw Scenario Data (costs and equity only) ---
-  const { buyingResults } = calculateBuyingYearlyData({ buying, investment });
+  const { buyingResults } = calculateBuyingYearlyData({ buying });
   const { rentingResults } = calculateRentingYearlyData({ renting, loanTerm: buying.loanTerm });
 
   // --- Initialize Investment & Wealth Tracking ---
@@ -42,8 +42,12 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
     const year = Math.ceil(month / 12);
     const monthIndex = (month - 1) % 12;
 
+    if (!buyingResults[year] || !rentingResults[year]) continue;
+
     const buyingMonthRaw = buyingResults[year].monthlyData[monthIndex];
     const rentingMonthRaw = rentingResults[year].monthlyData[monthIndex];
+
+    if (!buyingMonthRaw || !rentingMonthRaw) continue;
 
     // 1. Grow existing investments
     const buyingReturn = calculateInvestmentReturnForMonth(buyingInvestmentValue, investment.annualReturn);
@@ -68,13 +72,13 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
     // 3. Update monthly data points with new investment values
     const buyingMonthFinal = buyingResults[year].monthlyData[monthIndex];
     buyingMonthFinal.amountInvested = buyingTotalContributions;
-    buyingMonthFinal.investmentEarnings = buyingInvestmentValue - buyingTotalContributions;
+    buyingMonthFinal.investmentEarnings = buyingReturn;
     buyingMonthFinal.investmentsWithEarnings = buyingInvestmentValue;
     buyingMonthFinal.totalWealthBuying = buyingMonthFinal.homeEquity + buyingInvestmentValue;
 
     const rentingMonthFinal = rentingResults[year].monthlyData[monthIndex];
     rentingMonthFinal.amountInvested = rentingTotalContributions;
-    rentingMonthFinal.investmentEarnings = rentingInvestmentValue - rentingTotalContributions;
+    rentingMonthFinal.investmentEarnings = rentingReturn;
     rentingMonthFinal.investmentsWithEarnings = rentingInvestmentValue;
     rentingMonthFinal.totalWealthRenting = rentingInvestmentValue;
   }
@@ -86,11 +90,13 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
     if (year === 0) {
       const initialBuyingEquity = buyingResults[0].homeEquity;
       buyingResults[0].totalWealthBuying = initialBuyingEquity + buyingInvestmentValue;
-      rentingResults[0].totalWealthRenting = rentingInvestmentValue;
+      rentingResults[0].totalWealthRenting = downPaymentAmount;
+      
       buyingResults[0].investmentsWithEarnings = buyingInvestmentValue;
       buyingResults[0].amountInvested = buyingInvestmentValue;
-      rentingResults[0].investmentsWithEarnings = rentingInvestmentValue;
-      rentingResults[0].amountInvested = rentingInvestmentValue;
+      
+      rentingResults[0].investmentsWithEarnings = downPaymentAmount;
+      rentingResults[0].amountInvested = downPaymentAmount;
 
        yearlyComparisons.push({
         year: 0,
@@ -103,19 +109,26 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
       continue;
     }
     
-    const lastMonthOfYear = buyingResults[year].monthlyData[11];
     const buyingYear = buyingResults[year];
-    buyingYear.investmentsWithEarnings = lastMonthOfYear.investmentsWithEarnings;
-    buyingYear.investmentEarnings = lastMonthOfYear.investmentEarnings;
-    buyingYear.amountInvested = lastMonthOfYear.amountInvested;
-    buyingYear.totalWealthBuying = lastMonthOfYear.totalWealthBuying;
-
-    const lastRentingMonth = rentingResults[year].monthlyData[11];
     const rentingYear = rentingResults[year];
-    rentingYear.investmentsWithEarnings = lastRentingMonth.investmentsWithEarnings;
-    rentingYear.investmentEarnings = lastRentingMonth.investmentEarnings;
-    rentingYear.amountInvested = lastRentingMonth.amountInvested;
-    rentingYear.totalWealthRenting = lastRentingMonth.totalWealthRenting;
+    console.log({rentingResults})
+    // Sum monthly earnings to get yearly earnings
+    const yearlyBuyingInvestmentEarnings = buyingYear.monthlyData.reduce((acc, month) => acc + month.investmentEarnings, 0);
+    const yearlyRentingInvestmentEarnings = rentingYear.monthlyData.reduce((acc, month) => acc + month.investmentEarnings, 0);
+
+    // Update yearly results with aggregated data
+    const lastBuyingMonthOfYear = buyingYear.monthlyData[11];
+    buyingYear.investmentsWithEarnings = lastBuyingMonthOfYear.investmentsWithEarnings;
+    buyingYear.investmentEarnings = yearlyBuyingInvestmentEarnings;
+    buyingYear.amountInvested = lastBuyingMonthOfYear.amountInvested;
+    buyingYear.totalWealthBuying = lastBuyingMonthOfYear.totalWealthBuying;
+
+    const lastRentingMonthOfYear = rentingYear.monthlyData[11];
+    rentingYear.investmentsWithEarnings = lastRentingMonthOfYear.investmentsWithEarnings;
+    rentingYear.investmentEarnings = yearlyRentingInvestmentEarnings;
+    rentingYear.amountInvested = lastRentingMonthOfYear.amountInvested;
+    rentingYear.totalWealthRenting = lastRentingMonthOfYear.totalWealthRenting;
+
 
     // Apply capital gains tax only in the final year of the horizon
     if (year === timeHorizonYears) {
@@ -145,11 +158,14 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
   // --- Final Summary ---
   const finalComparison = yearlyComparisons[timeHorizonYears];
   const betterOption = finalComparison.difference > 0 ? "buying" : finalComparison.difference < 0 ? "renting" : "equal";
+  
+  const finalInvestmentAmount = rentingResults[timeHorizonYears].amountInvested;
 
   return {
     yearlyComparisons,
     buyingResults,
     rentingResults,
+    finalInvestmentAmount,
     summary: {
       finalBuyingWealth: finalComparison.buyingWealth,
       finalRentingWealth: finalComparison.rentingWealth,
