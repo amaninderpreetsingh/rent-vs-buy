@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface BuyingInputsStepProps {
   values: BuyingInputs;
@@ -31,9 +31,6 @@ const BuyingInputsStep: React.FC<BuyingInputsStepProps> = ({
   canProceed,
   currentStep,
 }) => {
-  const hasSavingsError = validationError?.toLowerCase().includes('current savings');
-  console.log({validationError})
-  console.log({hasSavingsError})
   const handleHousePriceChange = (housePrice: number) => {
     onChange({ ...values, housePrice });
   };
@@ -80,10 +77,6 @@ const BuyingInputsStep: React.FC<BuyingInputsStepProps> = ({
     onChange({ ...values, customAppreciationRate });
   };
 
-  const handleCurrentSavingsChange = (currentSavings: number) => {
-    onChange({ ...values, currentSavings });
-  };
-
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
   return (
@@ -109,22 +102,6 @@ const BuyingInputsStep: React.FC<BuyingInputsStepProps> = ({
         />
 
         <div className="space-y-2">
-          <CurrencyInput
-            id="currentSavings"
-            label={
-              <div className="flex items-center gap-2">
-                <span>Current Savings</span>
-                {hasSavingsError && (
-                  <AlertCircle className="h-4 w-4 text-red-500" />
-                )}
-              </div>
-            }
-            value={values.currentSavings}
-            onChange={handleCurrentSavingsChange}
-            description="Your total current savings"
-            className={hasSavingsError ? "border-red-300 focus-visible:ring-red-500" : ""}
-          />
-
           <SliderInput
             id="downPaymentPercent"
             label="Down Payment"

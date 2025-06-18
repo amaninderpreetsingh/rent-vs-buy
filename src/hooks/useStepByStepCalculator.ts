@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BuyingInputs, ComparisonResults, FormData, GeneralInputs, InvestmentInputs, RentingInputs } from "@/lib/types";
 import { calculateComparison } from "@/lib/calculations";
 import { toast } from "@/components/ui/use-toast";
@@ -95,23 +95,23 @@ export const useStepByStepCalculator = () => {
 
   // Form update handlers
   const handleGeneralChange = (general: GeneralInputs) => {
-    setFormData({ ...formData, general });
+    setFormData((prev) => ({ ...prev, general }));
   };
 
   const handleBuyingChange = (buying: BuyingInputs) => {
-    setFormData({ ...formData, buying });
+    setFormData((prev) => ({ ...prev, buying }));
   };
 
   const handleRentingChange = (renting: RentingInputs) => {
-    setFormData({ ...formData, renting });
+    setFormData((prev) => ({ ...prev, renting }));
   };
 
   const handleInvestmentChange = (investment: InvestmentInputs) => {
-    setFormData({ ...formData, investment });
+    setFormData((prev) => ({ ...prev, investment }));
   };
 
   // Reset form to defaults
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setFormData({
       general: defaultGeneral,
       buying: defaultBuying,
@@ -121,10 +121,10 @@ export const useStepByStepCalculator = () => {
     setResults(null);
     setValidationError(null);
     setCurrentStep('buying');
-  };
+  }, []);
 
   // Calculate results
-  const handleCalculate = () => {
+  const handleCalculate = useCallback(() => {
     if (formData.general.useIncomeAndSavings) {
       const downPaymentAmount = formData.buying.housePrice * (formData.buying.downPaymentPercent / 100);
       if (formData.general.currentSavings < downPaymentAmount) {
@@ -137,19 +137,14 @@ export const useStepByStepCalculator = () => {
       }
     }
 
-    // Clear any previous validation errors
     setValidationError(null);
-
-    // Proceed with calculation
     const calculationResults = calculateComparison(formData);
     setResults(calculationResults);
-
-    // Move to results step
     setCurrentStep('results');
-  };
+  }, [formData]);
 
   // Navigation functions
-  const goToNextStep = () => {
+  const goToNextStep = useCallback(() => {
     switch (currentStep) {
       case 'buying':
         setCurrentStep('renting');
@@ -166,12 +161,12 @@ export const useStepByStepCalculator = () => {
       default:
         break;
     }
-  };
+  }, [currentStep, handleCalculate]);
 
-  const goToPreviousStep = () => {
+  const goToPreviousStep = useCallback(() => {
     switch (currentStep) {
       case 'buying':
-        // No previous step from buying in this flow
+        // No previous step
         break;
       case 'renting':
         setCurrentStep('buying');
@@ -180,7 +175,7 @@ export const useStepByStepCalculator = () => {
         setCurrentStep('renting');
         break;
       case 'general':
-        setCurrentStep('investment')
+        setCurrentStep('investment');
         break;
       case 'results':
         setCurrentStep('general');
@@ -188,14 +183,14 @@ export const useStepByStepCalculator = () => {
       default:
         break;
     }
-  };
+  }, [currentStep]);
 
   const goToStep = (step: Step) => {
     setCurrentStep(step);
   };
 
   // Check if can proceed to next step
-  const canProceedToNextStep = (): boolean => {
+  const canProceedToNextStep = useCallback(() => {
     const { general, buying } = formData;
     return validateSavingsForDownPayment(
       general.useIncomeAndSavings,
@@ -203,7 +198,7 @@ export const useStepByStepCalculator = () => {
       buying.housePrice,
       buying.downPaymentPercent
     );
-  };
+  }, [formData.general.useIncomeAndSavings, formData.general.currentSavings, formData.buying.housePrice, formData.buying.downPaymentPercent]);
   
   return {
     formData,

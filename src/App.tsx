@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import DownPaymentCalculator from "./pages/DownPaymentCalculator";
-import StepByStepCalculator from "./pages/StepByStepCalculator";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +18,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/down-payment-calculator" element={<DownPaymentCalculator />} />
-          <Route path="/step-by-step" element={<StepByStepCalculator />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { HomeIcon, CalculatorIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -12,10 +11,8 @@ const Header = () => {
         return "Rent vs. Buy Financial Comparison Tool";
       case "/down-payment-calculator":
         return "Down Payment Calculator";
-      case "/step-by-step":
-        return "Step-by-Step Rent vs. Buy Calculator";
       default:
-        return ""; // or whatever default value you want
+        return "Rent vs. Buy Calculator"; // Fallback
     }
   })();
 
@@ -59,20 +56,6 @@ const Header = () => {
               >
                 <CalculatorIcon className="h-4 w-4 mr-2" />
                 Down Payment Calculator
-              </Link>
-            </li>
-            <li>
-              <Link 
-                to="/step-by-step" 
-                className={cn(
-                  "px-4 py-2 rounded-md transition-colors flex items-center",
-                  isActive("/step-by-step") 
-                    ? "bg-white/20 font-medium" 
-                    : "hover:bg-white/10"
-                )}
-              >
-                <CalculatorIcon className="h-4 w-4 mr-2" />
-                Step-by-Step Calculator
               </Link>
             </li>
           </ul>
