@@ -57,6 +57,7 @@ export interface MonthlyBuyingDataPoint {
   investmentsWithEarnings: number;
   totalWealthBuying: number;
   monthlyExpenses: number;
+  monthlyCosts: number;
 }
 
 export interface MonthlyRentingDataPoint {
@@ -89,6 +90,7 @@ export interface YearlyBuyingResult {
   capitalGainsTaxPaid: number; 
   monthlyData: MonthlyBuyingDataPoint[];
   monthlyExpenses: number;
+  monthlyCosts: number;
 }
 
 export interface YearlyRentingResult {

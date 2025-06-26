@@ -53,7 +53,8 @@ export const calculateBuyingYearlyData = ({
       investmentEarnings: 0,
       investmentsWithEarnings: 0, 
       totalWealthBuying: 0,
-      monthlyExpenses: 0
+      monthlyExpenses: 0,
+      monthlyCosts: 0
     });
   }
 
@@ -75,6 +76,7 @@ export const calculateBuyingYearlyData = ({
       capitalGainsTaxPaid: 0, 
       monthlyData: monthlyBuyingData[0],
       monthlyExpenses: 0,
+      monthlyCosts: 0
     });
 
   for (let year = 1; year <= buying.loanTerm; year++) {
@@ -149,6 +151,7 @@ export const calculateBuyingYearlyData = ({
         investmentEarnings: 0,
         investmentsWithEarnings: 0,
         totalWealthBuying: 0,
+        monthlyCosts: monthlyExpenses
       });
     }
 
@@ -170,6 +173,7 @@ export const calculateBuyingYearlyData = ({
       capitalGainsTaxPaid: 0,
       monthlyData: monthlyBuyingData[year],
       monthlyExpenses: yearlyMonthlyExpenses,
+      monthlyCosts: yearlyMonthlyExpenses
     });
   }
 

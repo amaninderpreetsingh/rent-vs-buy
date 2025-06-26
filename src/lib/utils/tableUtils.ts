@@ -19,6 +19,7 @@ export const generateMonthlyData = (year: number, rowData: YearlyTableData): Mon
       homeInsurance: monthlyDataPoint.homeInsurance || 0,
       maintenanceCosts: monthlyDataPoint.maintenanceCosts || 0,
       monthlyExpenses: monthlyDataPoint.monthlyExpenses || 0,
+      monthlyCosts: monthlyDataPoint.monthlyCosts || 0,
       totalRent: monthlyDataPoint.rent || 0,
       homeValue: monthlyDataPoint.homeValue || 0,
       homeEquity: monthlyDataPoint.homeEquity || 0,

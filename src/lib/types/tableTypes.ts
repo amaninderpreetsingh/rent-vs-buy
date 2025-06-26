@@ -14,6 +14,7 @@ export interface MonthlyTableData {
   homeInsurance?: number;
   maintenanceCosts?: number;
   monthlyExpenses: number;
+  monthlyCosts: number;
   totalRent?: number;
   homeValue?: number;
   homeEquity?: number;

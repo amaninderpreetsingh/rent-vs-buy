@@ -27,6 +27,7 @@ const TableView: React.FC<TableViewProps> = ({
   onReset,
   onCalculate,
 }) => {
+
   return (
     <>
       <div className="mb-8 p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-white/20">
