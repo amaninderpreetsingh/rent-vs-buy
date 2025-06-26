@@ -56,7 +56,7 @@ export interface MonthlyBuyingDataPoint {
   investmentEarnings: number;
   investmentsWithEarnings: number;
   totalWealthBuying: number;
-  monthlyExpenses: number
+  monthlyExpenses: number;
 }
 
 export interface MonthlyRentingDataPoint {
@@ -67,6 +67,7 @@ export interface MonthlyRentingDataPoint {
   investmentsWithEarnings: number;
   capitalGainsTax: number;
   totalWealthRenting: number;
+  monthlyExpenses: number;
 }
 
 // Calculation Result Types
@@ -87,6 +88,7 @@ export interface YearlyBuyingResult {
   investmentsWithEarnings: number;
   capitalGainsTaxPaid: number; 
   monthlyData: MonthlyBuyingDataPoint[];
+  monthlyExpenses: number;
 }
 
 export interface YearlyRentingResult {
@@ -98,6 +100,7 @@ export interface YearlyRentingResult {
   capitalGainsTaxPaid: number;
   totalWealthRenting: number;
   monthlyData: MonthlyRentingDataPoint[];
+  monthlyExpenses: number;
 }
 
 export interface YearlyComparison {

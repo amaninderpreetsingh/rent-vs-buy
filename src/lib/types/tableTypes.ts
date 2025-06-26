@@ -1,14 +1,10 @@
-// Table-specific type definitions
-
-// Generic column definition type
 export interface TableColumn<T> {
   key: keyof T | string;
   label: string;
   isVisible?: boolean;
-  isImportant?: boolean; // Important columns are visible by default and can't be hidden
+  isImportant?: boolean;
 }
 
-// Monthly data types for tables
 export interface MonthlyTableData {
   month: number;
   mortgagePayment?: number;
@@ -17,7 +13,7 @@ export interface MonthlyTableData {
   propertyTaxes?: number;
   homeInsurance?: number;
   maintenanceCosts?: number;
-  monthlyExpenses?: number;
+  monthlyExpenses: number;
   totalRent?: number;
   homeValue?: number;
   homeEquity?: number;
@@ -31,7 +27,6 @@ export interface MonthlyTableData {
   totalWealthRenting: number;
 }
 
-// Yearly data types for tables
 export interface YearlyTableData {
   year: number;
   mortgagePayment?: number;
@@ -40,7 +35,8 @@ export interface YearlyTableData {
   propertyTaxes?: number;
   homeInsurance?: number;
   maintenanceCosts?: number;
-  monthlyExpenses?: number;
+  monthlyExpenses: number;
+  monthlyCosts?: number;
   totalRent?: number;
   amountInvested: number;
   investmentEarnings: number;
@@ -52,10 +48,9 @@ export interface YearlyTableData {
   totalWealthRenting: number;
   investmentValueBeforeTax?: number;
   capitalGainsTaxPaid?: number;
-  monthlyData?: any[]; // Will be typed more specifically in components
+  monthlyData?: any[];
 }
 
-// Comparison data for tables
 export interface ComparisonTableData extends YearlyTableData {
   buyingWealth: number;
   rentingWealth: number;
@@ -65,7 +60,6 @@ export interface ComparisonTableData extends YearlyTableData {
   betterOption?: React.ReactNode;
 }
 
-// Props for table components
 export interface MonthlyBreakdownTableProps {
   year: number;
   columns: TableColumn<MonthlyTableData>[];

@@ -6,7 +6,7 @@ import {
 
 interface RentingCalculationInputs {
   renting: RentingInputs;
-  loanTerm: number; // Changed from 'general' to 'loanTerm'
+  loanTerm: number;
 }
 
 interface RentingCalculationResult {
@@ -20,11 +20,10 @@ export const calculateRentingYearlyData = ({
   const rentingResults: YearlyRentingResult[] = [];
   let monthlyRent = renting.monthlyRent;
 
-  // Year 0
   rentingResults.push({
     year: 0,
     totalRent: 0,
-    totalWealthRenting: 0, // Engine will calculate
+    totalWealthRenting: 0,
     amountInvested: 0,
     investmentEarnings: 0,
     investmentsWithEarnings: 0,
@@ -37,7 +36,9 @@ export const calculateRentingYearlyData = ({
       investmentsWithEarnings: 0,
       totalWealthRenting: 0,
       capitalGainsTax: 0,
-    }))
+      monthlyExpenses: 0,
+    })),
+    monthlyExpenses: 0,
   });
 
   for (let year = 1; year <= loanTerm; year++) {
@@ -49,28 +50,27 @@ export const calculateRentingYearlyData = ({
       monthlyData.push({
         month,
         rent: monthlyRent,
-        // Investment fields populated by the engine
         amountInvested: 0,
         investmentEarnings: 0,
         investmentsWithEarnings: 0,
         totalWealthRenting: 0,
         capitalGainsTax: 0,
+        monthlyExpenses: monthlyRent,
       });
     }
 
     rentingResults.push({
       year,
       totalRent: yearlyRent,
-      // Investment fields populated by the engine
       totalWealthRenting: 0,
       amountInvested: 0,
       investmentEarnings: 0,
       investmentsWithEarnings: 0,
       capitalGainsTaxPaid: 0,
       monthlyData: monthlyData,
+      monthlyExpenses: yearlyRent,
     });
 
-    // Increase rent for the next year
     monthlyRent *= 1 + renting.annualRentIncrease / 100;
   }
 

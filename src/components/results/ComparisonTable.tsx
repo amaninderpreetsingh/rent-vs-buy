@@ -22,7 +22,6 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
 
   if (!results) return null;
 
-  // Defensive check for data integrity
   if (!results.yearlyComparisons || !results.buyingResults || !results.rentingResults) {
     console.error("Missing required data in comparison results:", results);
     return (
@@ -62,13 +61,14 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
     const baseBuyingColumns: TableColumn<YearlyTableData>[] = [
       { key: "year", label: "Year", isVisible: true, isImportant: true },
       { key: "yearlyIncome", label: "Annual Income", isVisible: true, isImportant: false },
+      { key: "monthlyCosts", label: "Monthly Costs", isVisible: true, isImportant: true },
+      { key: "monthlyExpenses", label: "Yearly Costs", isVisible: false, isImportant: false },
       { key: "mortgagePayment", label: "Mortgage Payment", isVisible: true, isImportant: true },
       { key: "principalPaid", label: "Principal Paid", isVisible: !isMobile, isImportant: false },
       { key: "interestPaid", label: "Interest Paid", isVisible: !isMobile, isImportant: false },
       { key: "propertyTaxes", label: "Property Taxes", isVisible: false, isImportant: false },
       { key: "homeInsurance", label: "Insurance", isVisible: false, isImportant: false },
       { key: "maintenanceCosts", label: "Maintenance", isVisible: false, isImportant: false },
-      { key: "monthlyExpenses", label: "Monthly Expenses", isVisible: true, isImportant: false },
       { key: "amountInvested", label: "Amount Invested", isVisible: !isMobile, isImportant: false },
       { key: "investmentEarnings", label: "Investment Earnings", isVisible: !isMobile, isImportant: false },
       { key: "investmentsWithEarnings", label: "Investments with Earnings", isVisible: !isMobile, isImportant: false },
@@ -82,8 +82,7 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
     const baseRentingColumns: TableColumn<YearlyTableData>[] = [
       { key: "year", label: "Year", isVisible: true, isImportant: true },
       { key: "yearlyIncome", label: "Annual Income", isVisible: true, isImportant: false },
-      { key: "totalRent", label: "Total Rent", isVisible: true, isImportant: true },
-      { key: "monthlyExpenses", label: "Monthly Expenses", isVisible: true, isImportant: false },
+      { key: "totalRent", label: "Yearly Rent", isVisible: true, isImportant: true },
       { key: "amountInvested", label: "Amount Invested", isVisible: !isMobile, isImportant: false },
       { key: "investmentEarnings", label: "Investment Earnings", isVisible: !isMobile, isImportant: false },
       { key: "investmentsWithEarnings", label: "Investments with Earnings", isVisible: !isMobile, isImportant: false },
@@ -91,7 +90,6 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
       { key: "totalWealthRenting", label: "Total Wealth", isVisible: true, isImportant: true }
     ];
 
-    // Filter columns based on form inputs
     const filterIrrelevantColumns = (cols: TableColumn<any>[]) => {
       return cols.filter(col => {
         if (col.key === 'yearlyIncome' && (!general.annualIncome || general.annualIncome === 0)) {
@@ -110,7 +108,6 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
 
   }, [isMobile, formData]);
 
-  //  Enhance yearly comparisons with better option
   const enhancedYearlyComparisons = yearlyComparisons.map(year => {
     let betterOption: ReactNode;
 
@@ -139,6 +136,11 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
       betterOption
     };
   });
+
+  const buyingDataForTable = buyingResults.map(d => ({
+    ...d,
+    monthlyCosts: d.monthlyExpenses / 12
+  }));
 
   return (
     <Card className="mt-6">
@@ -202,7 +204,7 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
             </div>
             <div className="overflow-x-auto">
               <ComparisonTableTab
-                data={buyingResults}
+                data={buyingDataForTable}
                 columns={buyingColumnsState.filter(col => col.isVisible !== false)}
                 tabId="buying"
                 expandedRows={expandedRows}
