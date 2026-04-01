@@ -5,83 +5,83 @@
 
 @layer base {
   :root {
-    --background: 40 20% 99%;
-    --foreground: 220 20% 12%;
+    --background: 45 30% 94%;
+    --foreground: 180 20% 14%;
 
-    --card: 40 15% 98%;
-    --card-foreground: 220 20% 12%;
+    --card: 45 25% 97%;
+    --card-foreground: 180 20% 14%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 12%;
+    --popover: 45 25% 97%;
+    --popover-foreground: 180 20% 14%;
 
-    --primary: 220 55% 42%;
-    --primary-foreground: 40 20% 99%;
+    --primary: 174 55% 34%;
+    --primary-foreground: 45 30% 98%;
 
-    --secondary: 220 14% 94%;
-    --secondary-foreground: 220 20% 18%;
+    --secondary: 45 25% 88%;
+    --secondary-foreground: 180 18% 18%;
 
-    --muted: 220 14% 94%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 45 18% 88%;
+    --muted-foreground: 180 8% 44%;
 
-    --accent: 36 80% 52%;
-    --accent-foreground: 220 20% 12%;
+    --accent: 38 70% 55%;
+    --accent-foreground: 180 20% 14%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 90%;
-    --input: 220 13% 90%;
-    --ring: 220 55% 42%;
+    --border: 45 18% 85%;
+    --input: 45 18% 85%;
+    --ring: 174 55% 34%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 40 15% 97%;
-    --sidebar-foreground: 220 10% 30%;
-    --sidebar-primary: 220 55% 42%;
-    --sidebar-primary-foreground: 40 20% 99%;
-    --sidebar-accent: 220 14% 94%;
-    --sidebar-accent-foreground: 220 10% 30%;
-    --sidebar-border: 220 13% 90%;
-    --sidebar-ring: 220 55% 42%;
+    --sidebar-background: 45 26% 92%;
+    --sidebar-foreground: 180 10% 30%;
+    --sidebar-primary: 174 55% 34%;
+    --sidebar-primary-foreground: 45 30% 98%;
+    --sidebar-accent: 45 22% 88%;
+    --sidebar-accent-foreground: 180 10% 30%;
+    --sidebar-border: 45 18% 85%;
+    --sidebar-ring: 174 55% 34%;
   }
 
   .dark {
-    --background: 222 20% 7%;
-    --foreground: 220 14% 92%;
+    --background: 180 15% 8%;
+    --foreground: 45 20% 90%;
 
-    --card: 222 18% 10%;
-    --card-foreground: 220 14% 92%;
+    --card: 180 12% 11%;
+    --card-foreground: 45 20% 90%;
 
-    --popover: 222 18% 10%;
-    --popover-foreground: 220 14% 92%;
+    --popover: 180 12% 11%;
+    --popover-foreground: 45 20% 90%;
 
-    --primary: 220 50% 62%;
-    --primary-foreground: 222 20% 7%;
+    --primary: 174 50% 50%;
+    --primary-foreground: 180 15% 8%;
 
-    --secondary: 220 14% 16%;
-    --secondary-foreground: 220 14% 92%;
+    --secondary: 180 10% 17%;
+    --secondary-foreground: 45 18% 88%;
 
-    --muted: 220 14% 16%;
-    --muted-foreground: 220 10% 56%;
+    --muted: 180 10% 17%;
+    --muted-foreground: 174 8% 52%;
 
-    --accent: 220 14% 16%;
-    --accent-foreground: 220 14% 92%;
+    --accent: 38 60% 48%;
+    --accent-foreground: 45 20% 90%;
 
     --destructive: 0 62% 40%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 16%;
-    --input: 220 14% 16%;
-    --ring: 220 50% 62%;
+    --border: 180 10% 18%;
+    --input: 180 10% 18%;
+    --ring: 174 50% 50%;
 
-    --sidebar-background: 222 18% 9%;
-    --sidebar-foreground: 220 14% 85%;
-    --sidebar-primary: 220 50% 62%;
-    --sidebar-primary-foreground: 222 20% 7%;
-    --sidebar-accent: 220 14% 14%;
-    --sidebar-accent-foreground: 220 14% 85%;
-    --sidebar-border: 220 14% 14%;
-    --sidebar-ring: 220 50% 62%;
+    --sidebar-background: 180 12% 9%;
+    --sidebar-foreground: 45 18% 82%;
+    --sidebar-primary: 174 50% 50%;
+    --sidebar-primary-foreground: 180 15% 8%;
+    --sidebar-accent: 180 10% 15%;
+    --sidebar-accent-foreground: 45 18% 82%;
+    --sidebar-border: 180 10% 16%;
+    --sidebar-ring: 174 50% 50%;
   }
 }
 
@@ -94,6 +94,21 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     font-variation-settings: "opsz" 20;
+  }
+
+  /* Subtle grid pattern overlay */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(45 18% 80% / 0.3) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(45 18% 80% / 0.3) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .dark .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(180 10% 18% / 0.5) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(180 10% 18% / 0.5) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
 
   /* Tabular numbers for financial data */
