@@ -38,6 +38,10 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
   let cumulativeBuyingEarnings = 0;
   let cumulativeRentingEarnings = 0;
 
+  // Track cumulative contributions (principal only, no earnings)
+  let cumulativeBuyingContributions = initialBuyingInvestmentValue;
+  let cumulativeRentingContributions = initialRentingInvestmentValue;
+
   // --- Monthly loop: accumulate investments and write to monthly data ---
   for (let month = 1; month <= timeHorizonMonths; month++) {
     const year = Math.ceil(month / 12);
@@ -66,18 +70,22 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
 
     if (buyingMonthlyExpense < rentingMonthlyExpense) {
       buyingInvestmentValue += savings;
+      cumulativeBuyingContributions += savings;
     } else {
       rentingInvestmentValue += savings;
+      cumulativeRentingContributions += savings;
     }
 
     // Write investment data to monthly data points
     buyingMonth.investmentEarnings = buyingReturn;
     buyingMonth.investmentsWithEarnings = buyingInvestmentValue;
+    buyingMonth.amountInvested = cumulativeBuyingContributions;
     buyingMonth.totalWealthBuying = buyingMonth.homeEquity + buyingInvestmentValue;
     buyingMonth.monthlyExpenses = buyingMonthlyExpense;
 
     rentingMonth.investmentEarnings = rentingReturn;
     rentingMonth.investmentsWithEarnings = rentingInvestmentValue;
+    rentingMonth.amountInvested = cumulativeRentingContributions;
     rentingMonth.totalWealthRenting = rentingInvestmentValue;
     rentingMonth.monthlyExpenses = rentingMonthlyExpense;
   }
@@ -115,13 +123,13 @@ export const calculateComparison = (formData: FormData): ComparisonResults => {
     const lastBuyingMonth = buyingYear.monthlyData[11];
     buyingYear.investmentsWithEarnings = lastBuyingMonth.investmentsWithEarnings;
     buyingYear.investmentEarnings = yearlyBuyingInvestmentEarnings;
-    buyingYear.amountInvested = lastBuyingMonth.investmentsWithEarnings - cumulativeBuyingEarnings;
+    buyingYear.amountInvested = lastBuyingMonth.amountInvested;
     buyingYear.totalWealthBuying = lastBuyingMonth.totalWealthBuying;
 
     const lastRentingMonth = rentingYear.monthlyData[11];
     rentingYear.investmentsWithEarnings = lastRentingMonth.investmentsWithEarnings;
     rentingYear.investmentEarnings = yearlyRentingInvestmentEarnings;
-    rentingYear.amountInvested = lastRentingMonth.investmentsWithEarnings - cumulativeRentingEarnings;
+    rentingYear.amountInvested = lastRentingMonth.amountInvested;
     rentingYear.totalWealthRenting = lastRentingMonth.totalWealthRenting;
 
     // Apply capital gains tax on cumulative earnings in the final year
