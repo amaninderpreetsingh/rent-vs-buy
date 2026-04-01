@@ -26,7 +26,6 @@ export const generateMonthlyData = (year: number, rowData: YearlyTableData): Mon
       loanBalance:  monthlyDataPoint.loanBalance || 0,
       amountInvested: monthlyDataPoint.amountInvested || 0,
       investmentEarnings: monthlyDataPoint.investmentEarnings || 0,
-      investmentValueBeforeTax: monthlyDataPoint.investmentValueBeforeTax || 0,
       capitalGainsTaxPaid: monthlyDataPoint.capitalGainsTax || 0,
       totalWealthBuying: monthlyDataPoint.totalWealthBuying || 0,
       totalWealthRenting: monthlyDataPoint.totalWealthRenting || 0,
@@ -75,8 +74,6 @@ export const getTooltipContent = (key: string): string => {
       return "Investment returns for this period.";
     case 'investmentsWithEarnings':
       return "Total market value of investments.";
-    case 'investmentValueBeforeTax':
-      return "Value of investments before capital gains tax.";
     case 'capitalGainsTaxPaid':
       return "Capital gains tax on investment earnings.";
     case 'totalWealthRenting':
@@ -128,8 +125,6 @@ export const getMonthlyTooltipContent = (key: string): string => {
       return "Investment returns for this month.";
     case 'investmentsWithEarnings':
       return "Value of investments at this point in the year.";
-    case 'investmentValueBeforeTax':
-      return "Value of investments before capital gains tax.";
     case 'capitalGainsTaxPaid':
       return "Capital gains tax paid. This is only applied at the end of the year (month 12).";
     default:

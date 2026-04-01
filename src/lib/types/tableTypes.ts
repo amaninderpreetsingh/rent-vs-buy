@@ -22,7 +22,6 @@ export interface MonthlyTableData {
   investmentsWithEarnings?: number;
   amountInvested: number;
   investmentEarnings: number;
-  investmentValueBeforeTax?: number;
   capitalGainsTaxPaid?: number;
   totalWealthBuying: number;
   totalWealthRenting: number;
@@ -47,7 +46,6 @@ export interface YearlyTableData {
   homeEquity?: number;
   totalWealthBuying: number;
   totalWealthRenting: number;
-  investmentValueBeforeTax?: number;
   capitalGainsTaxPaid?: number;
   monthlyData?: any[];
 }

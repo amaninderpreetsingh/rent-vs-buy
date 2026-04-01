@@ -1,9 +1,9 @@
 import {
   BuyingInputs,
-  InvestmentInputs,
   MonthlyBuyingDataPoint,
   YearlyBuyingResult,
 } from "../types";
+import { calculateDownPayment } from "../defaults";
 import { getAppreciationRate } from "./propertyUtils";
 import {
   calculateMortgageAmortizationForMonth,
@@ -27,7 +27,7 @@ export const calculateBuyingYearlyData = ({
 }: BuyingCalculationInputs): BuyingCalculationResult => {
   const appreciationRate = getAppreciationRate(buying) / 100;
 
-  const downPaymentAmount = buying.housePrice * (buying.downPaymentPercent / 100);
+  const downPaymentAmount = calculateDownPayment(buying.housePrice, buying.downPaymentPercent);
   const loanAmount = buying.housePrice - downPaymentAmount;
   const initialHomeValue = buying.housePrice;
 

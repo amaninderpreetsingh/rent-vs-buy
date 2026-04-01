@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Step } from "@/hooks/useStepByStepCalculator";
+import { Step } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";

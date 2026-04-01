@@ -6,7 +6,7 @@ export const calculateInvestmentReturnForMonth = (
   annualReturnRate: number
 ): number => {
   const monthlyRate = Math.pow(1 + annualReturnRate / 100, 1 / 12) - 1;
-  return initialAmount * (monthlyRate); // This gives new value after growth
+  return initialAmount * monthlyRate;
 };
 
 // Calculate capital gains tax

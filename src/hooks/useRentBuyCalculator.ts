@@ -1,126 +1,58 @@
-import { useState, useEffect } from "react";
-import { BuyingInputs, ComparisonResults, FormData, GeneralInputs, InvestmentInputs, RentingInputs } from "@/lib/types";
+import { useState, useEffect, useCallback } from "react";
+import { BuyingInputs, ComparisonResults, FormData, GeneralInputs, InvestmentInputs, RentingInputs, Step } from "@/lib/types";
 import { calculateComparison } from "@/lib/calculations";
 import { toast } from "@/components/ui/use-toast";
-
-// Default form values
-const defaultGeneral: GeneralInputs = {
-  useIncomeAndSavings: false,
-  annualIncome: 0,
-  incomeIncrease: false,
-  annualIncomeGrowthRate: 3,
-  currentSavings: 0,
-  monthlyExpenses: 0,
-};
-
-const defaultBuying: BuyingInputs = {
-  housePrice: 400000,
-  downPaymentPercent: 20,
-  interestRate: 6,
-  loanTerm: 30,
-  loanType: "fixed",
-  propertyTaxRate: 1.2,
-  homeInsuranceRate: 0.5,
-  maintenanceCosts: 1,
-  usePercentageForMaintenance: true,
-  appreciationScenario: "medium",
-  customAppreciationRate: 4,
-};
-
-const defaultRenting: RentingInputs = {
-  monthlyRent: 2000,
-  annualRentIncrease: 3,
-};
-
-const defaultInvestment: InvestmentInputs = {
-  annualReturn: 10,
-  capitalGainsTaxRate: 15,
-};
+import { defaultFormData, calculateDownPayment, validateDownPayment } from "@/lib/defaults";
 
 export const useRentBuyCalculator = () => {
-  // Form state
-  const [formData, setFormData] = useState<FormData>({
-    general: defaultGeneral,
-    buying: defaultBuying,
-    renting: defaultRenting,
-    investment: defaultInvestment,
-  });
-
-  // Results state
+  const [formData, setFormData] = useState<FormData>({ ...defaultFormData });
   const [results, setResults] = useState<ComparisonResults | null>(null);
-  
-  // Validation state
   const [validationError, setValidationError] = useState<string | null>(null);
-  
-  // Validation function
-  const validateSavingsForDownPayment = (
-    usePersonalSavings: boolean,
-    currentSavings: number, 
-    housePrice: number, 
-    downPaymentPercent: number
-  ) => {
-    // Only validate if user has opted into using their personal savings
-    if (!usePersonalSavings) {
-      setValidationError(null);
-      return;
-    }
-    
-    const downPaymentAmount = housePrice * (downPaymentPercent / 100);
-    if (currentSavings < downPaymentAmount) {
-      setValidationError(`Your current savings ($${currentSavings.toLocaleString()}) are less than the required down payment ($${downPaymentAmount.toLocaleString()})`);
-    } else {
-      setValidationError(null);
-    }
-  };
-  
+  const [currentStep, setCurrentStep] = useState<Step>('buying');
+
   // Run validation whenever relevant fields change
   useEffect(() => {
-    validateSavingsForDownPayment(
+    const error = validateDownPayment(
       formData.general.useIncomeAndSavings,
       formData.general.currentSavings,
       formData.buying.housePrice,
       formData.buying.downPaymentPercent
     );
+    setValidationError(error);
   }, [
-    formData.general.useIncomeAndSavings, 
-    formData.general.currentSavings, 
-    formData.buying.housePrice, 
+    formData.general.useIncomeAndSavings,
+    formData.general.currentSavings,
+    formData.buying.housePrice,
     formData.buying.downPaymentPercent
   ]);
-  
+
   // Form update handlers
   const handleGeneralChange = (general: GeneralInputs) => {
-    setFormData({ ...formData, general });
+    setFormData(prev => ({ ...prev, general }));
   };
-  
+
   const handleBuyingChange = (buying: BuyingInputs) => {
-    setFormData({ ...formData, buying });
+    setFormData(prev => ({ ...prev, buying }));
   };
-  
+
   const handleRentingChange = (renting: RentingInputs) => {
-    setFormData({ ...formData, renting });
+    setFormData(prev => ({ ...prev, renting }));
   };
-  
+
   const handleInvestmentChange = (investment: InvestmentInputs) => {
-    setFormData({ ...formData, investment });
+    setFormData(prev => ({ ...prev, investment }));
   };
-  
-  // Reset form to defaults
-  const handleReset = () => {
-    setFormData({
-      general: defaultGeneral,
-      buying: defaultBuying,
-      renting: defaultRenting,
-      investment: defaultInvestment,
-    });
+
+  const handleReset = useCallback(() => {
+    setFormData({ ...defaultFormData });
     setResults(null);
     setValidationError(null);
-  };
-  
-  // Calculate results
-  const handleCalculate = () => {
+    setCurrentStep('buying');
+  }, []);
+
+  const handleCalculate = useCallback(() => {
     if (formData.general.useIncomeAndSavings) {
-      const downPaymentAmount = formData.buying.housePrice * (formData.buying.downPaymentPercent / 100);
+      const downPaymentAmount = calculateDownPayment(formData.buying.housePrice, formData.buying.downPaymentPercent);
       if (formData.general.currentSavings < downPaymentAmount) {
         toast({
           title: "Insufficient Savings",
@@ -130,26 +62,84 @@ export const useRentBuyCalculator = () => {
         return;
       }
     }
-    
-    // Proceed with calculation
+
     const calculationResults = calculateComparison(formData);
     setResults(calculationResults);
-    
-    // Scroll to results
+    setCurrentStep('results');
+
     setTimeout(() => {
       document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
+  }, [formData]);
+
+  // Step navigation
+  const goToNextStep = useCallback(() => {
+    switch (currentStep) {
+      case 'buying':
+        setCurrentStep('renting');
+        break;
+      case 'renting':
+        setCurrentStep('investment');
+        break;
+      case 'investment':
+        setCurrentStep('general');
+        break;
+      case 'general':
+        handleCalculate();
+        break;
+    }
+  }, [currentStep, handleCalculate]);
+
+  const goToPreviousStep = useCallback(() => {
+    switch (currentStep) {
+      case 'renting':
+        setCurrentStep('buying');
+        break;
+      case 'investment':
+        setCurrentStep('renting');
+        break;
+      case 'general':
+        setCurrentStep('investment');
+        break;
+      case 'results':
+        setCurrentStep('general');
+        break;
+    }
+  }, [currentStep]);
+
+  const goToStep = (step: Step) => {
+    setCurrentStep(step);
   };
+
+  const canProceedToNextStep = useCallback(() => {
+    const error = validateDownPayment(
+      formData.general.useIncomeAndSavings,
+      formData.general.currentSavings,
+      formData.buying.housePrice,
+      formData.buying.downPaymentPercent
+    );
+    return error === null;
+  }, [
+    formData.general.useIncomeAndSavings,
+    formData.general.currentSavings,
+    formData.buying.housePrice,
+    formData.buying.downPaymentPercent
+  ]);
 
   return {
     formData,
     results,
     validationError,
+    currentStep,
     handleGeneralChange,
     handleBuyingChange,
     handleRentingChange,
     handleInvestmentChange,
     handleReset,
-    handleCalculate
+    handleCalculate,
+    goToNextStep,
+    goToPreviousStep,
+    goToStep,
+    canProceedToNextStep,
   };
 };

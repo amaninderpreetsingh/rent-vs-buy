@@ -1,5 +1,7 @@
 // src/lib/types.ts
 
+export type Step = 'general' | 'buying' | 'renting' | 'investment' | 'results';
+
 export interface GeneralInputs {
   useIncomeAndSavings: boolean;
   annualIncome?: number;

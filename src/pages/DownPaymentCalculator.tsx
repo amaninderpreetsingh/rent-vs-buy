@@ -6,6 +6,7 @@ import DownPaymentForm from "@/components/calculators/downpayment/DownPaymentFor
 import SavingsPlanResults from "@/components/calculators/downpayment/SavingsPlanResults";
 import InvestmentGrowthTable from "@/components/calculators/downpayment/InvestmentGrowthTable";
 import { calculateInvestmentReturnForMonth } from "@/lib/utils/investmentUtils";
+import { calculateDownPayment } from "@/lib/defaults";
 
 interface MonthlyData {
   month: number;
@@ -46,7 +47,7 @@ const DownPaymentCalculator = () => {
 
   // Calculate down payment amount when home price or percentage changes
   useEffect(() => {
-    const calculatedDownPayment = homePrice * (downPaymentPercent / 100);
+    const calculatedDownPayment = calculateDownPayment(homePrice, downPaymentPercent);
     setDownPaymentAmount(calculatedDownPayment);
   }, [homePrice, downPaymentPercent]);
 

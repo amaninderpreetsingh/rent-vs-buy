@@ -1,5 +1,6 @@
 import { Card, CardContent } from "../ui/card";
 import { BuyingInputs } from "@/lib/types";
+import { calculateDownPayment } from "@/lib/defaults";
 import CurrencyInput from "./CurrencyInput";
 import PercentageInput from "./PercentageInput";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
@@ -76,7 +77,7 @@ const BuyingInputsForm = ({ values, onChange }: BuyingInputsFormProps) => {
               step={1}
               value={values.downPaymentPercent}
               onChange={(downPaymentPercent) => onChange({ ...values, downPaymentPercent })}
-              valueDisplay={`${values.downPaymentPercent}% (${(values.housePrice * (values.downPaymentPercent / 100)).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })})`}
+              valueDisplay={`${values.downPaymentPercent}% (${calculateDownPayment(values.housePrice, values.downPaymentPercent).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })})`}
               description="The down payment as a percentage of the house price"
             />
           </div>

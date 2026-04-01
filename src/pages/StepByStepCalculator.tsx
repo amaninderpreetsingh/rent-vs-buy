@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { useStepByStepCalculator } from "@/hooks/useStepByStepCalculator";
+import { useRentBuyCalculator } from "@/hooks/useRentBuyCalculator";
 import GeneralInputsStep from "@/components/step-by-step/GeneralInputsStep";
 import BuyingInputsStep from "@/components/step-by-step/BuyingInputsStep";
 import RentingInputsStep from "@/components/step-by-step/RentingInputsStep";
@@ -24,7 +24,7 @@ const StepByStepCalculator = () => {
     goToPreviousStep,
     goToStep,
     canProceedToNextStep
-  } = useStepByStepCalculator();
+  } = useRentBuyCalculator();
   
   // Memoize the canProceed value to prevent infinite renders
   const canProceed = useMemo(() => canProceedToNextStep(), [

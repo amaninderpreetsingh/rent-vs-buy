@@ -1,12 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { ComparisonResults, FormData, GeneralInputs, BuyingInputs, RentingInputs, InvestmentInputs } from "@/lib/types";
+import { ComparisonResults, FormData, GeneralInputs, BuyingInputs, RentingInputs, InvestmentInputs, Step } from "@/lib/types";
+import { calculateDownPayment } from "@/lib/defaults";
 import GeneralInputsStep from "@/components/step-by-step/GeneralInputsStep";
 import BuyingInputsStep from "@/components/step-by-step/BuyingInputsStep";
 import RentingInputsStep from "@/components/step-by-step/RentingInputsStep";
 import InvestmentInputsStep from "@/components/step-by-step/InvestmentInputsStep";
 import ResultsStep from "@/components/step-by-step/ResultsStep";
-
-type Step = 'buying' | 'renting' | 'investment' | 'general' | 'results';
 
 interface StepByStepViewProps {
   formData: FormData;
@@ -84,7 +83,7 @@ const StepByStepView: React.FC<StepByStepViewProps> = ({
 
   const canProceed = useMemo(() => {
     const { general, buying } = formData;
-    const downPaymentAmount = buying.housePrice * (buying.downPaymentPercent / 100);
+    const downPaymentAmount = calculateDownPayment(buying.housePrice, buying.downPaymentPercent);
     if (general.useIncomeAndSavings && general.currentSavings < downPaymentAmount) {
       return false;
     }
