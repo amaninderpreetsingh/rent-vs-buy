@@ -36,7 +36,7 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
     );
   }
 
-  const { yearlyComparisons, buyingResults, rentingResults } = results; 
+  const { yearlyComparisons, buyingResults, rentingResults } = results;
 
   const toggleRow = (tabKey: string, rowId: number) => {
     setExpandedRows(prev => ({
@@ -61,21 +61,22 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
     const baseBuyingColumns: TableColumn<YearlyTableData>[] = [
       { key: "year", label: "Year", isVisible: true, isImportant: true },
       { key: "yearlyIncome", label: "Annual Income", isVisible: true, isImportant: false },
-      { key: "monthlyExpenses", label: "Yearly Costs", isVisible: false, isImportant: false },
       { key: "mortgagePayment", label: "Mortgage Payment", isVisible: true, isImportant: true },
       { key: "principalPaid", label: "Principal Paid", isVisible: !isMobile, isImportant: false },
       { key: "interestPaid", label: "Interest Paid", isVisible: !isMobile, isImportant: false },
       { key: "propertyTaxes", label: "Property Taxes", isVisible: false, isImportant: false },
       { key: "homeInsurance", label: "Insurance", isVisible: false, isImportant: false },
       { key: "maintenanceCosts", label: "Maintenance", isVisible: false, isImportant: false },
-      { key: "monthlyCosts", label: "Monthly Costs", isVisible: true, isImportant: true },
-      { key: "amountInvested", label: "Amount Invested", isVisible: !isMobile, isImportant: false },
+      { key: "totalYearlyExpenses", label: "Yearly Costs", isVisible: true, isImportant: true },
+      { key: "amountInvested", label: "New Contributions", isVisible: true, isImportant: false },
+      { key: "balanceBeforeEarnings", label: "Balance Before Earnings", isVisible: !isMobile, isImportant: false },
       { key: "investmentEarnings", label: "Investment Earnings", isVisible: !isMobile, isImportant: false },
-      { key: "investmentsWithEarnings", label: "Investments with Earnings", isVisible: !isMobile, isImportant: false },
+      { key: "investmentsWithEarnings", label: "Portfolio Value", isVisible: !isMobile, isImportant: false },
       { key: "loanBalance", label: "Loan Balance", isVisible: !isMobile, isImportant: false },
       { key: "homeValue", label: "Home Value", isVisible: true, isImportant: true },
       { key: "homeEquity", label: "Home Equity", isVisible: true, isImportant: true },
-      { key: "capitalGainsTaxPaid", label: "Capital Gains Tax", isVisible: !isMobile, isImportant: false },
+      { key: "taxDeductionSavings", label: "Tax Savings", isVisible: false, isImportant: false },
+      { key: "capitalGainsTaxPaid", label: "Capital Gains Tax", isVisible: false, isImportant: false },
       { key: "totalWealthBuying", label: "Total Wealth", isVisible: true, isImportant: true }
     ];
 
@@ -83,25 +84,27 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
       { key: "year", label: "Year", isVisible: true, isImportant: true },
       { key: "yearlyIncome", label: "Annual Income", isVisible: true, isImportant: false },
       { key: "totalRent", label: "Yearly Rent", isVisible: true, isImportant: true },
-      { key: "amountInvested", label: "Amount Invested", isVisible: !isMobile, isImportant: false },
+      { key: "amountInvested", label: "New Contributions", isVisible: true, isImportant: false },
+      { key: "balanceBeforeEarnings", label: "Balance Before Earnings", isVisible: !isMobile, isImportant: false },
       { key: "investmentEarnings", label: "Investment Earnings", isVisible: !isMobile, isImportant: false },
-      { key: "investmentsWithEarnings", label: "Investments with Earnings", isVisible: !isMobile, isImportant: false },
+      { key: "investmentsWithEarnings", label: "Portfolio Value", isVisible: !isMobile, isImportant: false },
       { key: "capitalGainsTaxPaid", label: "Capital Gains Tax", isVisible: false, isImportant: false },
       { key: "totalWealthRenting", label: "Total Wealth", isVisible: true, isImportant: true }
     ];
 
     const filterIrrelevantColumns = (cols: TableColumn<any>[]) => {
       return cols.filter(col => {
-        if (col.key === 'yearlyIncome' && (!general.annualIncome || general.annualIncome === 0)) {
+        if (col.key === 'yearlyIncome' && (!general.useIncomeAndSavings || !general.annualIncome || general.annualIncome === 0)) {
           return false;
         }
-        if (col.key === 'monthlyExpenses' && (!general.monthlyExpenses || general.monthlyExpenses === 0)) {
+        if (col.key === 'taxDeductionSavings' && buying.marginalTaxRate === 0) {
           return false;
         }
         return true;
       });
     };
-    
+
+    const { buying } = formData;
     setSummaryColumnsState(filterIrrelevantColumns(defaultSummaryColumns));
     setBuyingColumnsState(filterIrrelevantColumns(baseBuyingColumns));
     setRentingColumnsState(filterIrrelevantColumns(baseRentingColumns));
@@ -144,26 +147,26 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
         <CardTitle className="text-base sm:text-xl">Year-by-Year Breakdown</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs 
-          defaultValue="summary" 
+        <Tabs
+          defaultValue="summary"
           className="w-full"
           onValueChange={setActiveTab}
         >
           <TabsList className="grid grid-cols-3 mb-6 h-10 sm:h-12">
-            <TabsTrigger 
-              value="summary" 
+            <TabsTrigger
+              value="summary"
               className="text-xs sm:text-sm py-1 sm:py-2"
             >
               Summary
             </TabsTrigger>
-            <TabsTrigger 
-              value="buying" 
+            <TabsTrigger
+              value="buying"
               className="text-xs sm:text-sm py-1 sm:py-2"
             >
               Buying Details
             </TabsTrigger>
-            <TabsTrigger 
-              value="renting" 
+            <TabsTrigger
+              value="renting"
               className="text-xs sm:text-sm py-1 sm:py-2"
             >
               Renting Details
@@ -173,9 +176,9 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
           <TabsContent value="summary">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xs sm:text-sm font-medium">Summary View</h3>
-              <ColumnSelector 
-                columns={summaryColumnsState} 
-                onChange={setSummaryColumnsState} 
+              <ColumnSelector
+                columns={summaryColumnsState}
+                onChange={setSummaryColumnsState}
               />
             </div>
             <div className="overflow-x-auto">
@@ -193,9 +196,9 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
           <TabsContent value="buying">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xs sm:text-sm font-medium">Buying Details</h3>
-              <ColumnSelector 
-                columns={buyingColumnsState} 
-                onChange={setBuyingColumnsState} 
+              <ColumnSelector
+                columns={buyingColumnsState}
+                onChange={setBuyingColumnsState}
               />
             </div>
             <div className="overflow-x-auto">
@@ -213,9 +216,9 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
           <TabsContent value="renting">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xs sm:text-sm font-medium">Renting Details</h3>
-              <ColumnSelector 
-                columns={rentingColumnsState} 
-                onChange={setRentingColumnsState} 
+              <ColumnSelector
+                columns={rentingColumnsState}
+                onChange={setRentingColumnsState}
               />
             </div>
             <div className="overflow-x-auto">

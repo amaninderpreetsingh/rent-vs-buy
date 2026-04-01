@@ -2,42 +2,46 @@ import { MonthlyTableData, YearlyTableData } from "../types/tableTypes";
 
 export const generateMonthlyData = (year: number, rowData: YearlyTableData): MonthlyTableData[] => {
   const monthlyData: MonthlyTableData[] = [];
-  
+  const monthlyIncome = rowData.yearlyIncome ? rowData.yearlyIncome / 12 : undefined;
+
   for (let month = 1; month <= 12; month++) {
-    if (!rowData.monthlyData || !rowData.monthlyData[month-1]) {
+    if (!rowData.monthlyData || !rowData.monthlyData[month - 1]) {
       continue;
     }
-    
-    const monthlyDataPoint = rowData.monthlyData[month-1];
+
+    const mp = rowData.monthlyData[month - 1];
 
     monthlyData.push({
       month,
-      mortgagePayment: monthlyDataPoint.mortgagePayment || 0,
-      principalPaid: monthlyDataPoint.principalPayment || 0,
-      interestPaid: monthlyDataPoint.interestPayment || 0,
-      propertyTaxes: monthlyDataPoint.propertyTaxes || 0,
-      homeInsurance: monthlyDataPoint.homeInsurance || 0,
-      maintenanceCosts: monthlyDataPoint.maintenanceCosts || 0,
-      monthlyExpenses: monthlyDataPoint.monthlyExpenses || 0,
-      monthlyCosts: monthlyDataPoint.monthlyCosts || 0,
-      totalRent: monthlyDataPoint.rent || 0,
-      homeValue: monthlyDataPoint.homeValue || 0,
-      homeEquity: monthlyDataPoint.homeEquity || 0,
-      loanBalance:  monthlyDataPoint.loanBalance || 0,
-      amountInvested: monthlyDataPoint.amountInvested || 0,
-      investmentEarnings: monthlyDataPoint.investmentEarnings || 0,
-      capitalGainsTaxPaid: monthlyDataPoint.capitalGainsTax || 0,
-      totalWealthBuying: monthlyDataPoint.totalWealthBuying || 0,
-      totalWealthRenting: monthlyDataPoint.totalWealthRenting || 0,
-      investmentsWithEarnings: monthlyDataPoint.investmentsWithEarnings || 0,
+      yearlyIncome: monthlyIncome,
+      totalYearlyExpenses: mp.monthlyExpenses || 0,
+      mortgagePayment: mp.mortgagePayment || 0,
+      principalPaid: mp.principalPayment || 0,
+      interestPaid: mp.interestPayment || 0,
+      propertyTaxes: mp.propertyTaxes || 0,
+      homeInsurance: mp.homeInsurance || 0,
+      maintenanceCosts: mp.maintenanceCosts || 0,
+      monthlyExpenses: mp.monthlyExpenses || 0,
+      totalRent: mp.rent || 0,
+      homeValue: mp.homeValue || 0,
+      homeEquity: mp.homeEquity || 0,
+      loanBalance: mp.loanBalance || 0,
+      amountInvested: mp.amountInvested || 0,
+      balanceBeforeEarnings: mp.balanceBeforeEarnings || 0,
+      investmentEarnings: mp.investmentEarnings || 0,
+      capitalGainsTaxPaid: mp.capitalGainsTax || 0,
+      taxDeductionSavings: 0,
+      totalWealthBuying: mp.totalWealthBuying || 0,
+      totalWealthRenting: mp.totalWealthRenting || 0,
+      investmentsWithEarnings: mp.investmentsWithEarnings || 0,
     });
   }
-  
+
   return monthlyData;
 };
 
 export const getTooltipContent = (key: string): string => {
-  switch(key) {
+  switch (key) {
     case 'yearlyIncome':
       return "Annual income, potentially with yearly increases applied.";
     case 'mortgagePayment':
@@ -52,32 +56,32 @@ export const getTooltipContent = (key: string): string => {
       return "Annual home insurance cost based on home value.";
     case 'maintenanceCosts':
       return "Annual home maintenance costs.";
-    case 'monthlyCosts':
-      return "The average monthly cost for buying, including mortgage, taxes, insurance, and maintenance.";
     case 'monthlyExpenses':
-      return "Total yearly expenses for the scenario.";
+      return "Monthly housing expenses for this scenario.";
+    case 'totalYearlyExpenses':
+      return "Total yearly housing expenses including mortgage, taxes, insurance, and maintenance.";
     case 'totalRent':
       return "Annual rent payments.";
-    case 'leftoverIncome':
-      return "Annual income minus housing expenses.";
     case 'homeValue':
       return "Current home value after appreciation.";
     case 'homeEquity':
-      return "Downpayment plus principal paid.";
+      return "Home value minus remaining loan balance.";
     case 'loanBalance':
       return "Remaining mortgage balance at the end of this year.";
-    case 'yearlySavings':
-      return "Amount available for investment each month.";
     case 'amountInvested':
-      return "Cumulative contributions to investments.";
+      return "New money added to investments this period.";
+    case 'balanceBeforeEarnings':
+      return "Investment balance after contributions but before earnings. This is what returns are calculated on.";
     case 'investmentEarnings':
       return "Investment returns for this period.";
     case 'investmentsWithEarnings':
-      return "Total market value of investments.";
+      return "Total portfolio value after earnings.";
     case 'capitalGainsTaxPaid':
       return "Capital gains tax on investment earnings.";
+    case 'taxDeductionSavings':
+      return "Tax savings from mortgage interest and property tax deductions above the standard deduction.";
     case 'totalWealthRenting':
-      return "Total wealth including initial savings, downpayment and investments.";
+      return "Total wealth including investments.";
     case 'totalWealthBuying':
       return "Total wealth including home equity and investments.";
     case 'difference':
@@ -92,9 +96,11 @@ export const getTooltipContent = (key: string): string => {
 };
 
 export const getMonthlyTooltipContent = (key: string): string => {
-  switch(key) {
+  switch (key) {
     case 'yearlyIncome':
       return "Annual income divided by 12.";
+    case 'totalYearlyExpenses':
+      return "Monthly housing expenses for this month.";
     case 'mortgagePayment':
       return "Monthly mortgage payment (principal + interest).";
     case 'principalPaid':
@@ -108,23 +114,21 @@ export const getMonthlyTooltipContent = (key: string): string => {
     case 'maintenanceCosts':
       return "Monthly home maintenance costs.";
     case 'monthlyExpenses':
-      return "Total monthly expenses for this month for the scenario.";
+      return "Total monthly expenses for this scenario.";
     case 'homeValue':
       return "Estimated home value for this month.";
     case 'homeEquity':
-      return "Downpayment plus principal paid.";
+      return "Home value minus remaining loan balance.";
     case 'loanBalance':
       return "Remaining mortgage balance.";
-    case 'leftoverIncome':
-      return "Monthly income minus housing expenses.";
-    case 'yearlySavings':
-      return "Amount available for investment this month.";
     case 'amountInvested':
-      return "Cumulative contributions to investments.";
+      return "New money added to investments this month.";
+    case 'balanceBeforeEarnings':
+      return "Investment balance after this month's contribution, before earnings are applied. Returns are calculated on this amount.";
     case 'investmentEarnings':
       return "Investment returns for this month.";
     case 'investmentsWithEarnings':
-      return "Value of investments at this point in the year.";
+      return "Portfolio value at end of month (balance + earnings).";
     case 'capitalGainsTaxPaid':
       return "Capital gains tax paid. This is only applied at the end of the year (month 12).";
     default:

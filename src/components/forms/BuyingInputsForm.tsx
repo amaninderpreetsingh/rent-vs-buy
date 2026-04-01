@@ -29,10 +29,6 @@ const BuyingInputsForm = ({ values, onChange }: BuyingInputsFormProps) => {
     onChange({ ...values, loanTerm });
   };
 
-  const handleLoanTypeChange = (loanType: "fixed" | "adjustable") => {
-    onChange({ ...values, loanType });
-  };
-
   const handlePropertyTaxRateChange = (propertyTaxRate: number) => {
     onChange({ ...values, propertyTaxRate });
   };
@@ -111,18 +107,6 @@ const BuyingInputsForm = ({ values, onChange }: BuyingInputsFormProps) => {
                     </SelectContent>
                   </Select>
                   
-                  <Select 
-                    value={values.loanType} 
-                    onValueChange={(value) => handleLoanTypeChange(value as "fixed" | "adjustable")}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select loan type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fixed">Fixed-Rate Mortgage</SelectItem>
-                      <SelectItem value="adjustable" disabled>Adjustable-Rate (soon)</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -181,6 +165,43 @@ const BuyingInputsForm = ({ values, onChange }: BuyingInputsFormProps) => {
                       description="The estimated annual home maintenance costs"
                     />
                   )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="transaction-costs">
+              <AccordionTrigger>Transaction Costs & Tax</AccordionTrigger>
+              <AccordionContent>
+                <div className="grid gap-6 pt-4">
+                  <PercentageInput
+                    id="closingCostPercent"
+                    label="Closing Costs"
+                    value={values.closingCostPercent}
+                    onChange={(closingCostPercent) => onChange({ ...values, closingCostPercent })}
+                    description="One-time closing costs as a percentage of home price (typically 2-5%)"
+                    min={0}
+                    max={10}
+                  />
+
+                  <PercentageInput
+                    id="sellingCostPercent"
+                    label="Selling Costs"
+                    value={values.sellingCostPercent}
+                    onChange={(sellingCostPercent) => onChange({ ...values, sellingCostPercent })}
+                    description="Cost of selling at end of period, including agent fees (typically 5-6%)"
+                    min={0}
+                    max={10}
+                  />
+
+                  <PercentageInput
+                    id="marginalTaxRate"
+                    label="Marginal Tax Rate"
+                    value={values.marginalTaxRate}
+                    onChange={(marginalTaxRate) => onChange({ ...values, marginalTaxRate })}
+                    description="Your marginal federal income tax rate, used for mortgage interest deduction"
+                    min={0}
+                    max={50}
+                  />
                 </div>
               </AccordionContent>
             </AccordionItem>

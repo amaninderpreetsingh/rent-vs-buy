@@ -2,8 +2,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { TableCellWithTooltip } from "../ui/table-cell-with-tooltip";
 import { MonthlyTableData, TableColumn, YearlyTableData } from "@/lib/types/tableTypes";
 import { generateMonthlyData, getMonthlyTooltipContent } from "@/lib/utils/tableUtils";
-import { useState, useEffect } from "react";
-import { ColumnSelector } from "../ui/column-selector";
 
 interface MonthlyBreakdownTableProps {
   year: number;
@@ -12,44 +10,41 @@ interface MonthlyBreakdownTableProps {
 }
 
 const MonthlyBreakdownTable = ({ year, columns, rowData }: MonthlyBreakdownTableProps) => {
-  // State for monthly columns
-  const [monthlyColumnsState, setMonthlyColumnsState] = useState<TableColumn<MonthlyTableData>[]>([]);
-  
-  // Generate monthly data using the utility function
   const monthlyData: MonthlyTableData[] = generateMonthlyData(year, rowData);
 
-  // Initialize monthly columns based on parent columns
-  useEffect(() => {
-    // Create a "Month" column that's always visible and important
-    const monthColumn: TableColumn<MonthlyTableData> = {
-      key: "month",
-      label: "Month",
-      isVisible: true,
-      isImportant: true
-    };
-    
-    // Map parent columns to monthly columns, preserving visibility settings
-    const mappedColumns = columns.slice(1).map(col => ({
+  // Derive monthly columns directly from parent columns (no local state)
+  const monthColumn: TableColumn<MonthlyTableData> = {
+    key: "month",
+    label: "Month",
+    isVisible: true,
+    isImportant: true
+  };
+
+  // Remap yearly labels to monthly equivalents
+  const monthlyLabelMap: Record<string, string> = {
+    "Annual Income": "Monthly Income",
+    "Yearly Costs": "Monthly Costs",
+    "Yearly Rent": "Monthly Rent",
+    "Mortgage Payment": "Mortgage Payment",
+    "New Contributions": "Contribution",
+    "Principal Paid": "Principal",
+    "Interest Paid": "Interest",
+  };
+
+  const visibleColumns: TableColumn<MonthlyTableData>[] = [
+    monthColumn,
+    ...columns.slice(1).filter(col => col.isVisible !== false).map(col => ({
       key: col.key as string,
-      label: col.label,
+      label: monthlyLabelMap[col.label] ?? col.label,
       isVisible: col.isVisible,
       isImportant: col.isImportant
-    }));
-    
-    setMonthlyColumnsState([monthColumn, ...mappedColumns]);
-  }, [columns]);
-
-  // Filter visible columns
-  const visibleColumns = monthlyColumnsState.filter(col => col.isVisible !== false);
+    }))
+  ];
 
   return (
     <div className="py-2 w-full">
-      <div className="flex justify-between items-center mb-2">
+      <div className="mb-2">
         <h4 className="text-sm font-medium">Monthly Breakdown for Year {year}</h4>
-        <ColumnSelector 
-          columns={monthlyColumnsState} 
-          onChange={setMonthlyColumnsState} 
-        />
       </div>
       <div className="overflow-x-auto w-full max-w-8xl">
         <Table className="w-full table-auto">

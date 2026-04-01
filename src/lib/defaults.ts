@@ -25,6 +25,7 @@ export const defaultGeneral: GeneralInputs = {
   annualIncomeGrowthRate: 3,
   currentSavings: 0,
   monthlyExpenses: 0,
+  filingStatus: "single",
 };
 
 export const defaultBuying: BuyingInputs = {
@@ -32,13 +33,15 @@ export const defaultBuying: BuyingInputs = {
   downPaymentPercent: 20,
   interestRate: 6,
   loanTerm: 30,
-  loanType: "fixed",
   propertyTaxRate: 1.2,
   homeInsuranceRate: 0.5,
   maintenanceCosts: 1,
   usePercentageForMaintenance: true,
   appreciationScenario: "medium",
   customAppreciationRate: 4,
+  marginalTaxRate: 24,
+  closingCostPercent: 0,
+  sellingCostPercent: 0,
 };
 
 export const defaultRenting: RentingInputs = {

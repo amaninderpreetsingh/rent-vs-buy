@@ -44,10 +44,6 @@ const BuyingInputsStep: React.FC<BuyingInputsStepProps> = ({
     onChange({ ...values, loanTerm });
   };
 
-  const handleLoanTypeChange = (loanType: "fixed" | "adjustable") => {
-    onChange({ ...values, loanType });
-  };
-
   const handlePropertyTaxRateChange = (propertyTaxRate: number) => {
     onChange({ ...values, propertyTaxRate });
   };
@@ -165,22 +161,6 @@ const BuyingInputsStep: React.FC<BuyingInputsStepProps> = ({
                 description="The length of your mortgage loan in years"
               />
 
-              <div className="space-y-2">
-                <Label>Loan Type</Label>
-                <RadioGroup
-                  value={values.loanType}
-                  onValueChange={(value) => handleLoanTypeChange(value as "fixed" | "adjustable")}
-                  className="flex flex-col space-y-1"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="fixed" id="fixed" />
-                    <Label htmlFor="fixed" className="cursor-pointer">Fixed Rate</Label>
-                  </div>
-                </RadioGroup>
-                <p className="text-sm text-muted-foreground">
-                  The type of mortgage loan you'll use
-                </p>
-              </div>
             </div>
 
             <Separator />
@@ -248,6 +228,43 @@ const BuyingInputsStep: React.FC<BuyingInputsStepProps> = ({
                   />
                 )}
               </div>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-4">
+              <PercentageInput
+                id="closingCostPercent"
+                label="Closing Costs"
+                value={values.closingCostPercent}
+                onChange={(closingCostPercent) => onChange({ ...values, closingCostPercent })}
+                description="One-time closing costs as a percentage of home price (typically 2-5%)"
+                min={0}
+                max={10}
+                step={0.5}
+              />
+
+              <PercentageInput
+                id="sellingCostPercent"
+                label="Selling Costs"
+                value={values.sellingCostPercent}
+                onChange={(sellingCostPercent) => onChange({ ...values, sellingCostPercent })}
+                description="Cost of selling at end of period, including agent fees (typically 5-6%)"
+                min={0}
+                max={10}
+                step={0.5}
+              />
+
+              <PercentageInput
+                id="marginalTaxRate"
+                label="Marginal Tax Rate"
+                value={values.marginalTaxRate}
+                onChange={(marginalTaxRate) => onChange({ ...values, marginalTaxRate })}
+                description="Your marginal federal income tax rate, used for mortgage interest deduction"
+                min={0}
+                max={50}
+                step={1}
+              />
             </div>
 
             <Separator />

@@ -7,19 +7,16 @@ describe("integration: full calculation flow", () => {
   it("default inputs produce valid, fully-populated results", () => {
     const results = calculateComparison(defaultFormData);
 
-    // All top-level fields present
     expect(results.yearlyComparisons).toBeDefined();
     expect(results.buyingResults).toBeDefined();
     expect(results.rentingResults).toBeDefined();
     expect(results.summary).toBeDefined();
     expect(results.finalInvestmentAmount).toBeDefined();
 
-    // Correct lengths
     expect(results.yearlyComparisons).toHaveLength(31);
     expect(results.buyingResults).toHaveLength(31);
     expect(results.rentingResults).toHaveLength(31);
 
-    // Summary is populated
     expect(results.summary.finalBuyingWealth).toBeGreaterThan(0);
     expect(results.summary.finalRentingWealth).toBeGreaterThan(0);
     expect(results.summary.difference).toBeGreaterThan(0);
@@ -46,7 +43,6 @@ describe("integration: full calculation flow", () => {
   it("year 0 through year N wealth shows reasonable progression", () => {
     const results = calculateComparison(defaultFormData);
 
-    // Buying wealth should start low and grow (appreciation + equity building)
     const year0Buying = results.yearlyComparisons[0].buyingWealth;
     const year10Buying = results.yearlyComparisons[10].buyingWealth;
     const year30Buying = results.yearlyComparisons[30].buyingWealth;
@@ -54,7 +50,6 @@ describe("integration: full calculation flow", () => {
     expect(year0Buying).toBeLessThan(year10Buying);
     expect(year10Buying).toBeLessThan(year30Buying);
 
-    // Renting wealth should also grow (investments compound)
     const year0Renting = results.yearlyComparisons[0].rentingWealth;
     const year10Renting = results.yearlyComparisons[10].rentingWealth;
     const year30Renting = results.yearlyComparisons[30].rentingWealth;
@@ -63,17 +58,16 @@ describe("integration: full calculation flow", () => {
     expect(year10Renting).toBeLessThan(year30Renting);
   });
 
-  it("all yearly results have 12 monthly data points with non-negative values", () => {
+  it("all active yearly results have 12 monthly data points with non-negative values", () => {
     const results = calculateComparison(defaultFormData);
 
-    for (let year = 0; year <= 30; year++) {
+    for (let year = 1; year <= 30; year++) {
       const buyingYear = results.buyingResults[year];
       const rentingYear = results.rentingResults[year];
 
       expect(buyingYear.monthlyData).toHaveLength(12);
       expect(rentingYear.monthlyData).toHaveLength(12);
 
-      // No negative home values or equity in any month
       for (const month of buyingYear.monthlyData) {
         expect(month.homeValue).toBeGreaterThanOrEqual(0);
       }
@@ -109,7 +103,6 @@ describe("integration: full calculation flow", () => {
     const results = calculateComparison(formData);
     expect(results.summary.betterOption).toBe("buying");
 
-    // Verify Year 0 is clearly different from Year 30
     const year0 = results.yearlyComparisons[0];
     const year30 = results.yearlyComparisons[30];
     expect(year30.buyingWealth).toBeGreaterThan(year0.buyingWealth * 3);
@@ -146,9 +139,10 @@ describe("integration: full calculation flow", () => {
     };
 
     const results = calculateComparison(formData);
+    const closingCosts = 400000 * (formData.buying.closingCostPercent / 100);
 
-    // Buyer: 80k equity + 70k leftover savings = 150k
-    expect(results.yearlyComparisons[0].buyingWealth).toBeCloseTo(150000, -2);
+    // Buyer: 80k equity + (150k - 80k - closingCosts) leftover
+    expect(results.yearlyComparisons[0].buyingWealth).toBeCloseTo(150000 - closingCosts, -2);
     // Renter: all 150k invested
     expect(results.yearlyComparisons[0].rentingWealth).toBeCloseTo(150000, -2);
   });
@@ -166,7 +160,6 @@ describe("integration: full calculation flow", () => {
       prevRentingCosts = comparison.cumulativeRentingCosts;
     }
 
-    // After 30 years, cumulative costs should be substantial
     const finalComparison = results.yearlyComparisons[30];
     expect(finalComparison.cumulativeBuyingCosts).toBeGreaterThan(100000);
     expect(finalComparison.cumulativeRentingCosts).toBeGreaterThan(100000);
