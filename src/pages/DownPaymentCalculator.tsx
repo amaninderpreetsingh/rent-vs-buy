@@ -185,10 +185,10 @@ const DownPaymentCalculator = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-100">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      <main className="flex-grow py-8 px-4 md:px-8 max-w-120rem mx-auto w-full">
+      <main className="flex-grow py-6 px-4 sm:px-6 lg:px-8 max-w-8xl mx-auto w-full">
         <div className="mb-8 p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-white/20">
           <InfoCard title="Down Payment Savings Calculator">
             <p>

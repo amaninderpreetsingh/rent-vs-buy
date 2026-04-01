@@ -36,10 +36,10 @@ const StepByStepCalculator = () => {
   ]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-100">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      
-      <main className="flex-grow py-8 px-4 md:px-8 max-w-120rem mx-auto w-full">
+
+      <main className="flex-grow py-6 px-4 sm:px-6 lg:px-8 max-w-8xl mx-auto w-full">
         {currentStep === 'general' && (
           <GeneralInputsStep
             values={formData.general}

@@ -25,7 +25,7 @@ const ResultsStep: React.FC<ResultsStepProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-12xl mx-auto">
+    <div className="max-w-8xl mx-auto">
       <Card className="shadow-lg border-0 mb-8">
         <div className="bg-primary text-primary-foreground p-6 rounded-t-lg">
           <h2 className="text-2xl font-bold">Your Results</h2>

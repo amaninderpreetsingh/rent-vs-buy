@@ -4,8 +4,7 @@ import Footer from "@/components/layout/Footer";
 import { useRentBuyCalculator } from "@/hooks/useRentBuyCalculator";
 import StepByStepView from "@/components/views/StepByStepView";
 import TableView from "@/components/views/TableView";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 type ViewMode = 'step-by-step' | 'table';
 
@@ -24,10 +23,6 @@ const Index = () => {
     handleCalculate
   } = useRentBuyCalculator();
 
-  const toggleViewMode = () => {
-    setViewMode(current => current === 'step-by-step' ? 'table' : 'step-by-step');
-  };
-
   const commonProps = {
     formData,
     results,
@@ -41,18 +36,36 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      
-      <main className="flex-grow py-8 px-4 md:px-8 max-w-120rem mx-auto w-full">
-        <div className="flex justify-center items-center space-x-2 mb-8 p-4 bg-white/60 backdrop-blur-sm rounded-xl shadow-sm border-white/20">
-          <Label htmlFor="view-toggle" className={viewMode === 'table' ? 'text-muted-foreground' : 'font-bold'}>Step-by-Step View</Label>
-          <Switch
-            id="view-toggle"
-            checked={viewMode === 'table'}
-            onCheckedChange={toggleViewMode}
-          />
-          <Label htmlFor="view-toggle" className={viewMode === 'table' ? 'font-bold' : 'text-muted-foreground'}>Table View</Label>
+
+      <main className="flex-grow py-6 px-4 sm:px-6 lg:px-8 max-w-8xl mx-auto w-full">
+        {/* View toggle */}
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex rounded-lg border bg-card p-0.5">
+            <button
+              onClick={() => setViewMode('step-by-step')}
+              className={cn(
+                "px-4 py-2 text-sm font-medium rounded-md transition-all",
+                viewMode === 'step-by-step'
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Step-by-Step
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={cn(
+                "px-4 py-2 text-sm font-medium rounded-md transition-all",
+                viewMode === 'table'
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              All Inputs
+            </button>
+          </div>
         </div>
 
         {viewMode === 'step-by-step' ? (
@@ -61,7 +74,7 @@ const Index = () => {
           <TableView {...commonProps} />
         )}
       </main>
-      
+
       <Footer />
     </div>
   );

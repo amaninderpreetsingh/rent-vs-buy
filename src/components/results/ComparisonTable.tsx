@@ -52,10 +52,10 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
       { key: "year", label: "Year", isVisible: true, isImportant: true },
       { key: "cumulativeBuyingCosts", label: "Buying Costs", isVisible: !isMobile, isImportant: false },
       { key: "cumulativeRentingCosts", label: "Renting Costs", isVisible: !isMobile, isImportant: false },
-      { key: "buyingWealth", label: "Buying Wealth", isVisible: true, isImportant: true },
-      { key: "rentingWealth", label: "Renting Wealth", isVisible: true, isImportant: true },
-      { key: "difference", label: "Difference", isVisible: true, isImportant: true },
-      { key: "betterOption", label: "Better Option", isVisible: true, isImportant: true }
+      { key: "buyingWealth", label: "Buying", isVisible: true, isImportant: true },
+      { key: "rentingWealth", label: "Renting", isVisible: true, isImportant: true },
+      { key: "difference", label: "Diff", isVisible: !isMobile, isImportant: false },
+      { key: "betterOption", label: "Winner", isVisible: true, isImportant: true }
     ];
 
     const baseBuyingColumns: TableColumn<YearlyTableData>[] = [
@@ -125,7 +125,7 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
       );
     } else {
       betterOption = (
-        <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+        <span className="px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
           Equal
         </span>
       );
@@ -185,7 +185,7 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
                 tabId="summary"
                 expandedRows={expandedRows}
                 onToggleRow={toggleRow}
-                className="min-w-[600px] sm:min-w-full"
+                className="w-full"
               />
             </div>
           </TabsContent>
@@ -205,7 +205,7 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
                 tabId="buying"
                 expandedRows={expandedRows}
                 onToggleRow={toggleRow}
-                className="min-w-[600px] sm:min-w-full"
+                className="w-full"
               />
             </div>
           </TabsContent>
@@ -225,7 +225,7 @@ const ComparisonTable = ({ results, formData }: ComparisonTableProps) => {
                 tabId="renting"
                 expandedRows={expandedRows}
                 onToggleRow={toggleRow}
-                className="min-w-[600px] sm:min-w-full"
+                className="w-full"
               />
             </div>
           </TabsContent>

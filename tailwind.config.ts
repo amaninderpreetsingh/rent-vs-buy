@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
 	darkMode: ["class"],
@@ -14,19 +15,15 @@ export default {
 			center: true,
 			padding: '2rem',
 			screens: {
-				'2xl': '1600px' // Increased from 1400px
+				'2xl': '1400px'
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['"Inter Variable"', ...defaultTheme.fontFamily.sans],
+			},
 			maxWidth: {
-				'100rem': '100rem',
-				'120rem': '120rem',
-				'8xl': '96rem',  // 1536px
-				'9xl': '112rem', // 1792px
-				'10xl': '128rem', // 2048px
-				'11xl': '144rem', // 2304px
-				'12xl': '160rem', // 2560px
-				'screen-2xl': '1600px', // Matching container width
+				'8xl': '90rem',
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -73,19 +70,19 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				buy: {
-					DEFAULT: 'hsl(210, 100%, 56%)', // Blue
-					light: 'hsl(210, 100%, 85%)',
-					dark: 'hsl(210, 100%, 26%)'
+					DEFAULT: 'hsl(215, 65%, 46%)',
+					light: 'hsl(215, 55%, 92%)',
+					dark: 'hsl(215, 65%, 28%)'
 				},
 				rent: {
-					DEFAULT: 'hsl(160, 84%, 39%)', // Teal
-					light: 'hsl(160, 84%, 85%)',
-					dark: 'hsl(160, 84%, 19%)'
+					DEFAULT: 'hsl(162, 50%, 38%)',
+					light: 'hsl(162, 40%, 92%)',
+					dark: 'hsl(162, 50%, 22%)'
 				},
 				investment: {
-					DEFAULT: 'hsl(282, 67.80%, 41.40%)', // Purple
-					light: 'hsl(283, 75.00%, 65.50%)',
-					dark: 'hsl(290, 70.40%, 37.10%)'
+					DEFAULT: 'hsl(270, 45%, 42%)',
+					light: 'hsl(270, 35%, 92%)',
+					dark: 'hsl(270, 45%, 26%)'
 				}
 			},
 			borderRadius: {
@@ -95,20 +92,12 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
 				}
 			},
 			animation: {

@@ -51,7 +51,7 @@ const MonthlyBreakdownTable = ({ year, columns, rowData }: MonthlyBreakdownTable
           onChange={setMonthlyColumnsState} 
         />
       </div>
-      <div className="overflow-x-auto w-full max-w-12xl">
+      <div className="overflow-x-auto w-full max-w-8xl">
         <Table className="w-full table-auto">
           <TableHeader>
             <TableRow>

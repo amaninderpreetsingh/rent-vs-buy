@@ -1,66 +1,75 @@
-import React from "react";
-import { HomeIcon, CalculatorIcon } from "lucide-react";
+import React, { useState } from "react";
+import { HomeIcon, CalculatorIcon, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
+const navItems = [
+  { path: "/", label: "Rent vs. Buy", icon: HomeIcon },
+  { path: "/down-payment-calculator", label: "Down Payment", icon: CalculatorIcon },
+];
+
 const Header = () => {
   const location = useLocation();
-  const headerName = (() => {
-    switch (location.pathname) {
-      case "/":
-        return "Rent vs. Buy Financial Comparison Tool";
-      case "/down-payment-calculator":
-        return "Down Payment Calculator";
-      default:
-        return "Rent vs. Buy Calculator"; // Fallback
-    }
-  })();
-
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="bg-primary text-white py-4 px-6 shadow-md">
-      <div className="container mx-auto flex items-center justify-between">
-        <div className="flex items-center">
-          <HomeIcon className="h-6 w-6 mr-2" />
-          <h1 className="text-xl font-bold">{headerName}</h1>
-        </div>
+    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="container mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
+        <Link to="/" className="flex items-center gap-2 font-semibold text-foreground tracking-tight">
+          <HomeIcon className="h-5 w-5 text-primary" />
+          <span className="text-[15px]">RentVsBuy</span>
+        </Link>
 
-        <nav className="hidden md:block">
-          <ul className="flex space-x-2">
-            <li>
-              <Link 
-                to="/" 
-                className={cn(
-                  "px-4 py-2 rounded-md transition-colors flex items-center",
-                  isActive("/") 
-                    ? "bg-white/20 font-medium" 
-                    : "hover:bg-white/10"
-                )}
-              >
-                <HomeIcon className="h-4 w-4 mr-2" />
-                Rent vs. Buy
-              </Link>
-            </li>
-            <li>
-              <Link 
-                to="/down-payment-calculator" 
-                className={cn(
-                  "px-4 py-2 rounded-md transition-colors flex items-center",
-                  isActive("/down-payment-calculator") 
-                    ? "bg-white/20 font-medium" 
-                    : "hover:bg-white/10"
-                )}
-              >
-                <CalculatorIcon className="h-4 w-4 mr-2" />
-                Down Payment Calculator
-              </Link>
-            </li>
-          </ul>
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-1">
+          {navItems.map(({ path, label, icon: Icon }) => (
+            <Link
+              key={path}
+              to={path}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors",
+                location.pathname === path
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              )}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {label}
+            </Link>
+          ))}
         </nav>
+
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden p-2 -mr-2 text-muted-foreground hover:text-foreground"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+        >
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </div>
+
+      {/* Mobile nav dropdown */}
+      {mobileOpen && (
+        <div className="md:hidden border-t bg-background px-4 pb-3 pt-2">
+          {navItems.map(({ path, label, icon: Icon }) => (
+            <Link
+              key={path}
+              to={path}
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                "flex items-center gap-2 px-3 py-2.5 rounded-md text-sm transition-colors",
+                location.pathname === path
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+            </Link>
+          ))}
+        </div>
+      )}
     </header>
   );
 };
